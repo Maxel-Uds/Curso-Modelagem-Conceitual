@@ -1,8 +1,12 @@
 package com.maxel.cursomc;
 
 import com.maxel.cursomc.domain.Categoria;
+import com.maxel.cursomc.domain.Cidade;
+import com.maxel.cursomc.domain.Estado;
 import com.maxel.cursomc.domain.Produto;
 import com.maxel.cursomc.repositories.CategoriaRepository;
+import com.maxel.cursomc.repositories.CidadeRepository;
+import com.maxel.cursomc.repositories.EstadoRepository;
 import com.maxel.cursomc.repositories.ProdutoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -18,6 +22,10 @@ public class CursomcApplication implements CommandLineRunner {
 	private CategoriaRepository CatRepo;
 	@Autowired
 	private ProdutoRepository ProdRepo;
+	@Autowired
+	private CidadeRepository Cidrepo;
+	@Autowired
+	private EstadoRepository EstRepo;
 
 	public static void main(String[] args) {
 		SpringApplication.run(CursomcApplication.class, args);
@@ -39,7 +47,19 @@ public class CursomcApplication implements CommandLineRunner {
 		pro2.getCategorias().addAll(Arrays.asList(cat1, cat2));
 		pro3.getCategorias().add(cat2);
 
+		Estado est1 = new Estado(null, "Minas Gerais");
+		Estado est2 = new Estado(null, "São Paulo");
+
+		Cidade cid1 = new Cidade(null, "Uberlândia", est1);
+		Cidade cid2 = new Cidade(null, "São Paulo", est2);
+		Cidade cid3 = new Cidade(null, "Campinas", est2);
+
+		est1.getCidades().addAll(Arrays.asList(cid1));
+		est2.getCidades().addAll(Arrays.asList(cid2, cid3));
+
 		CatRepo.saveAll(Arrays.asList(cat1, cat2));
 		ProdRepo.saveAll(Arrays.asList(pro1, pro2, pro3));
+		EstRepo.saveAll(Arrays.asList(est1, est2));
+		Cidrepo.saveAll(Arrays.asList(cid1, cid2, cid3));
 	}
 }
