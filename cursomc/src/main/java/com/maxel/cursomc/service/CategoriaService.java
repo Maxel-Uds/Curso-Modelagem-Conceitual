@@ -2,6 +2,7 @@ package com.maxel.cursomc.service;
 
 import com.maxel.cursomc.domain.Categoria;
 import com.maxel.cursomc.repositories.CategoriaRepository;
+import com.maxel.cursomc.service.exceptions.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +16,6 @@ public class CategoriaService {
 
     public Categoria findById(Integer id) {
         Optional<Categoria> obj = repo.findById(id);
-        return obj.orElse(null);
+        return obj.orElseThrow(() -> { throw new ObjectNotFoundException("Nenhum objeto foi encontrado com o ID: " + id); });
     }
 }
