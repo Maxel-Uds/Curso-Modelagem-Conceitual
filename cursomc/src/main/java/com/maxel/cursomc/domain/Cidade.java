@@ -1,5 +1,7 @@
 package com.maxel.cursomc.domain;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Objects;
@@ -11,6 +13,8 @@ public class Cidade implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String nome;
+
+    @JsonManagedReference
     @ManyToOne
     @JoinColumn(name = "estado_id")
     private Estado estado;
