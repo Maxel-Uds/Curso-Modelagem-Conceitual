@@ -2,8 +2,7 @@ package com.maxel.cursomc.domain;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Date;
-import java.util.Objects;
+import java.util.*;
 
 @Entity
 public class Pedido implements Serializable {
@@ -21,6 +20,8 @@ public class Pedido implements Serializable {
     private Endereco enderecoDeEntrega;
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "pedido")
     private Pagamento pagamento;
+    @OneToMany( mappedBy = "id.pedido")
+    private Set<ItemPedido> itens = new HashSet<ItemPedido>();
 
     public Pedido() {}
 
@@ -67,8 +68,14 @@ public class Pedido implements Serializable {
         return pagamento;
     }
 
-    public void setPagamento(Pagamento pagamento) {
-        this.pagamento = pagamento;
+    public void setPagamento(Pagamento pagamento) { this.pagamento = pagamento; }
+
+    public Set<ItemPedido> getItens() {
+        return itens;
+    }
+
+    public void setItens(Set<ItemPedido> itens) {
+        this.itens = itens;
     }
 
     @Override
