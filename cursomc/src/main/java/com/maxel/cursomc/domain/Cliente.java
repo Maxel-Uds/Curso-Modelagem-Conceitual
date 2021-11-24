@@ -25,6 +25,8 @@ public class Cliente implements Serializable {
     @ElementCollection //Indica e cria uma tabela de uma entidade fraca com nome específico no db
     @CollectionTable(name = "TELEFONE")
     private Set<String> telefones = new HashSet<String>();
+    @OneToMany(mappedBy = "cliente")
+    private List<Pedido> pedidos = new ArrayList<Pedido>();
 
     public Cliente() {}
 
@@ -82,6 +84,22 @@ public class Cliente implements Serializable {
 
     public void setTelefones(Set<String> telefones) {
         this.telefones = telefones;
+    }
+
+    public String getCpfOuCnpj() {
+        return cpfOuCnpj;
+    }
+
+    public void setCpfOuCnpj(String cpfOuCnpj) {
+        this.cpfOuCnpj = cpfOuCnpj;
+    }
+
+    public List<Pedido> getPedidos() {
+        return pedidos;
+    }
+
+    public void setPedidos(List<Pedido> pedidos) {
+        this.pedidos = pedidos;
     }
 
     @Override
