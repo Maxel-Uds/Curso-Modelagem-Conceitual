@@ -1,5 +1,7 @@
 package com.maxel.cursomc.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import java.io.Serializable;
@@ -9,6 +11,7 @@ import java.util.Objects;
 public class ItemPedido implements Serializable {
 
     @EmbeddedId //Indica que é um id embutido em uma classe auxiliar
+    @JsonIgnore //O JSON vai ignorar a propriedade/função e não irá fazer sua serialização
     private ItemPedidoPK id = new ItemPedidoPK();
     private Double desconto;
     private Integer quantidade;
@@ -24,6 +27,7 @@ public class ItemPedido implements Serializable {
         this.preco = preco;
     }
 
+    @JsonIgnore
     public Pedido getPedido() { return id.getPedido(); }
 
     public Produto getProduto() {
