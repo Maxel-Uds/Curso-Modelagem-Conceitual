@@ -1,8 +1,5 @@
 package com.maxel.cursomc.domain;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -17,7 +14,6 @@ public class Categoria implements Serializable { //Serializable: Interface  que 
     private Integer id;
     private String nome;
 
-    @JsonManagedReference //Irá trazer os objetos relacionados a esta classe
     @ManyToMany(mappedBy = "categorias") //Indica que a relação está mapeado na lista de categorias da classe Produto
     private List<Produto> produtos = new ArrayList<Produto>();
 

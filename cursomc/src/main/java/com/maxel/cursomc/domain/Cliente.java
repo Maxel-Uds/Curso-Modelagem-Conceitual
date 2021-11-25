@@ -1,7 +1,6 @@
 package com.maxel.cursomc.domain;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.maxel.cursomc.domain.enums.TipoCliente;
 
 import javax.persistence.*;
@@ -19,14 +18,12 @@ public class Cliente implements Serializable {
     private String cpfOuCnpj;
     private Integer tipo;
 
-    @JsonManagedReference
     @OneToMany(mappedBy = "cliente")
     private List<Endereco> enderecos = new ArrayList<Endereco>();
-    @JsonManagedReference
     @ElementCollection //Indica e cria uma tabela de uma entidade fraca com nome específico no db
     @CollectionTable(name = "TELEFONE")
     private Set<String> telefones = new HashSet<String>();
-    @JsonBackReference
+    @JsonIgnore
     @OneToMany(mappedBy = "cliente")
     private List<Pedido> pedidos = new ArrayList<Pedido>();
 

@@ -1,6 +1,6 @@
 package com.maxel.cursomc.domain;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.maxel.cursomc.domain.enums.EstadoPagamento;
 
 import javax.persistence.*;
@@ -18,7 +18,7 @@ public abstract class Pagamento implements Serializable {
     @OneToOne
     @JoinColumn(name = "pedido_id")
     @MapsId //Garante que o id desta classe seja o mesmo da classe pedido
-    @JsonBackReference
+    @JsonIgnore
     private Pedido pedido;
 
     public Pagamento() {}

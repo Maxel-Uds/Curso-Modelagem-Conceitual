@@ -1,8 +1,6 @@
 package com.maxel.cursomc.domain;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -17,7 +15,7 @@ public class Produto implements Serializable {
     private String nome;
     private Double preco;
 
-    @JsonBackReference //Impede  busca cíclica
+    @JsonIgnore //Impede  busca cíclica
     @ManyToMany //Indica que é uma relação de muitos para muitos
     //Dá um nome à chave estrangeira da categoria e cria uma terceira tabela e seta o nome da coluna que relaciona os IDs dos produtos e categorias
     @JoinTable(name = "PRODUTO_CATEGORIA", joinColumns = @JoinColumn(name = "produto_id"), inverseJoinColumns = @JoinColumn(name = "categoria_id"))
