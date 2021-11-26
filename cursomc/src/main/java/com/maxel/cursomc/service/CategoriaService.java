@@ -1,6 +1,7 @@
 package com.maxel.cursomc.service;
 
 import com.maxel.cursomc.domain.Categoria;
+import com.maxel.cursomc.dto.CategoriaDTO;
 import com.maxel.cursomc.repositories.CategoriaRepository;
 import com.maxel.cursomc.service.exceptions.DataIntegrityException;
 import com.maxel.cursomc.service.exceptions.ObjectNotFoundException;
@@ -53,5 +54,9 @@ public class CategoriaService {
     public Page<Categoria> findPage(Integer page, Integer linesPerPage, String orderBy, String direction) {
         PageRequest pageRequest = PageRequest.of(page, linesPerPage, Sort.Direction.valueOf(direction), orderBy);
         return repo.findAll(pageRequest);
+    }
+
+    public Categoria fromDto(CategoriaDTO objDto) {
+        return new Categoria(objDto.getId(), objDto.getNome());
     }
 }
