@@ -23,4 +23,10 @@ public class CategoriaService {
         obj.setId(null);
        return repo.save(obj);
     }
+
+    public Categoria update(Categoria obj) {
+        findById(obj.getId());
+        //O save() serve tanto para inserir quanto para atualizar, depende apenas se o ID é null ou não
+        return repo.save(obj);
+    }
 }

@@ -24,9 +24,17 @@ public class CategoriaResource {
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<Void> insert(@RequestBody Categoria obj) { //Indica que o objeto vai ser construído a partir de um JSON enviado pelo body
+        obj.setId(null);
         obj = service.insert(obj);
         //Retorna a URL onde foi feita requisição junto com o ID do novo objeto criado
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(obj.getId()).toUri();
         return  ResponseEntity.created(uri).build();
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+    public ResponseEntity<Void> update(@PathVariable Integer id, @RequestBody Categoria obj) {
+        obj.setId(id);
+        obj = service.update(obj);
+        return ResponseEntity.noContent().build();
     }
 }
