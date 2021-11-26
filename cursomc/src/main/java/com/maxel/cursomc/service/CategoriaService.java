@@ -1,6 +1,7 @@
 package com.maxel.cursomc.service;
 
 import com.maxel.cursomc.domain.Categoria;
+import com.maxel.cursomc.dto.CategoriaDTO;
 import com.maxel.cursomc.repositories.CategoriaRepository;
 import com.maxel.cursomc.service.exceptions.DataIntegrityException;
 import com.maxel.cursomc.service.exceptions.ObjectNotFoundException;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -40,5 +42,9 @@ public class CategoriaService {
         catch (DataIntegrityViolationException e) {
             throw new DataIntegrityException("A Categoria não pode ser excluída porque possuí produtos associados a ela");
         }
+    }
+
+    public List<Categoria> findAll() {
+        return repo.findAll();
     }
 }
