@@ -1,5 +1,6 @@
 package com.maxel.cursomc.resources.exceptions;
 
+import com.maxel.cursomc.service.exceptions.DataIntegrityException;
 import com.maxel.cursomc.service.exceptions.ObjectNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,5 +17,11 @@ public class ResourceExceptionHandler {
     public ResponseEntity<StandartError> objectNotFoundException(ObjectNotFoundException e, HttpServletRequest req) {
         StandartError err = new StandartError(HttpStatus.NOT_FOUND.value(), e.getMessage(), System.currentTimeMillis());
         return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(err);
+    }
+
+    @ExceptionHandler(DataIntegrityException.class)
+    public ResponseEntity<StandartError> dataIntegrityException(DataIntegrityException e, HttpServletRequest req) {
+        StandartError err = new StandartError(HttpStatus.BAD_REQUEST.value(), e.getMessage(), System.currentTimeMillis());
+        return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
     }
 }
