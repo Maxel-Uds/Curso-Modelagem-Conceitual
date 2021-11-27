@@ -1,16 +1,17 @@
 package com.maxel.cursomc.resources;
 
-import com.maxel.cursomc.domain.Categoria;
 import com.maxel.cursomc.domain.Cliente;
-import com.maxel.cursomc.dto.CategoriaDTO;
 import com.maxel.cursomc.dto.ClienteDTO;
+import com.maxel.cursomc.dto.ClienteNewDTO;
 import com.maxel.cursomc.service.ClienteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.util.ArrayList;
+import javax.validation.Valid;
+import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,6 +26,14 @@ public class ClienteResource {
     public ResponseEntity<Cliente> find(@PathVariable Integer id) {
         Cliente obj = service.findById(id);
         return ResponseEntity.ok().body(obj);
+    }
+
+    @RequestMapping(method = RequestMethod.POST)
+    public ResponseEntity<Void> insert(@Valid @RequestBody ClienteNewDTO objDto) {
+        Cliente obj = service.fromDto(objDto);
+        obj = service.insert(obj);
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(obj.getId()).toUri();
+        return ResponseEntity.created(uri).build();
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
