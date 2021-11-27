@@ -18,7 +18,8 @@ public class Cliente implements Serializable {
     private String cpfOuCnpj;
     private Integer tipo;
 
-    @OneToMany(mappedBy = "cliente")
+    //CascadeType.ALL: todas as ações feitas no cliente se refletem nos endereços
+    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL)
     private List<Endereco> enderecos = new ArrayList<Endereco>();
     @ElementCollection //Indica e cria uma tabela de uma entidade fraca com nome específico no db
     @CollectionTable(name = "TELEFONE")
