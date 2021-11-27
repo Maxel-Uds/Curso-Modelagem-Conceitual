@@ -1,20 +1,37 @@
 package com.maxel.cursomc.dto;
 
+import com.maxel.cursomc.service.validation.ClienteInsert;
+import org.hibernate.validator.constraints.Length;
+
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
 
+@ClienteInsert
 public class ClienteNewDTO implements Serializable {
 
+    @NotEmpty(message = "Preenchimento obrigatório")
+    @Length(min=5, max=120, message = "O tamanho deve ser de 5 a 120 caracteres")
     private String nome;
+    @Email(message = "Email inválido")
+    @NotEmpty(message = "Preenchimento obrigatório")
     private String email;
+    @NotEmpty(message = "Preenchimento obrigatório")
     private String cpfOuCnpj;
     private Integer tipo;
 
+    @NotEmpty(message = "Preenchimento obrigatório")
     private String logradouro;
+    @NotEmpty(message = "Preenchimento obrigatório")
     private String numero;
+    @NotEmpty(message = "Preenchimento obrigatório")
     private String complemento;
+    @NotEmpty(message = "Preenchimento obrigatório")
     private String bairro;
+    @NotEmpty(message = "Preenchimento obrigatório")
     private String cep;
 
+    @NotEmpty(message = "Preenchimento obrigatório")
     private String telefone1;
     private String telefone2;
     private String telefone3;
