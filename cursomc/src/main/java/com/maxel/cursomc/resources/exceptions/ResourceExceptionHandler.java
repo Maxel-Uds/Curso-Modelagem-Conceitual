@@ -2,6 +2,7 @@ package com.maxel.cursomc.resources.exceptions;
 
 import com.maxel.cursomc.service.exceptions.DataIntegrityException;
 import com.maxel.cursomc.service.exceptions.ObjectNotFoundException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -27,6 +28,12 @@ public class ResourceExceptionHandler {
         return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
     }
 
+//    @ExceptionHandler(DataIntegrityViolationException.class)
+//    public ResponseEntity<StandartError> dataValidationException(DataIntegrityViolationException e, HttpServletRequest req) {
+//        StandartError err = new StandartError(HttpStatus.BAD_REQUEST.value(), "O email já existe", System.currentTimeMillis());
+//        return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
+//    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<StandartError> validation(MethodArgumentNotValidException e, HttpServletRequest req) {
         ValidationError err = new ValidationError((HttpStatus.BAD_REQUEST.value()), "Erro de Validação", System.currentTimeMillis());
@@ -34,7 +41,6 @@ public class ResourceExceptionHandler {
         for(FieldError x : e.getBindingResult().getFieldErrors()) {
             err.addError(x.getField(), x.getDefaultMessage());
         }
-
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
     }
 }
