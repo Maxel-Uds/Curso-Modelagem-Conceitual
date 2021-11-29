@@ -51,16 +51,37 @@ public class CursomcApplication implements CommandLineRunner {
 		Produto pro1 = new Produto(null, "Computador", 2000.00);
 		Produto pro2 = new Produto(null, "Impressora", 800.00);
 		Produto pro3 = new Produto(null, "Mouse", 80.00);
+		Produto pro4 = new Produto(null, "Mesa de escritório", 300.00);
+		Produto pro5 = new Produto(null, "Toalha", 50.00);
+		Produto pro6 = new Produto(null, "Colcha", 200.00);
+		Produto pro7 = new Produto(null, "TV true color", 1200.00);
+		Produto pro8 = new Produto(null, "Roçadeira", 800.00);
+		Produto pro9 = new Produto(null, "Abajour", 100.00);
+		Produto pro10 = new Produto(null, "Pendente", 180.00);
+		Produto pro11 = new Produto(null, "Shampoo", 90.00);
 
-		cat1.getProdutos().add(pro2);
+		cat1.getProdutos().addAll(Arrays.asList(pro2, pro4));
 		cat2.getProdutos().addAll(Arrays.asList(pro1, pro2, pro3));
+		cat3.getProdutos().addAll(Arrays.asList(pro5, pro6));
+		cat4.getProdutos().addAll(Arrays.asList(pro1, pro2, pro3, pro7));
+		cat5.getProdutos().addAll(Arrays.asList(pro8));
+		cat6.getProdutos().addAll(Arrays.asList(pro9, pro10));
+		cat7.getProdutos().addAll(Arrays.asList(pro11));
 
-		pro1.getCategorias().add(cat2);
-		pro2.getCategorias().addAll(Arrays.asList(cat1, cat2));
-		pro3.getCategorias().add(cat2);
+		pro1.getCategorias().addAll(Arrays.asList(cat2, cat4));
+		pro2.getCategorias().addAll(Arrays.asList(cat1, cat2, cat4));
+		pro3.getCategorias().addAll(Arrays.asList(cat2, cat4));
+		pro4.getCategorias().addAll(Arrays.asList(cat1));
+		pro5.getCategorias().addAll(Arrays.asList(cat3));
+		pro6.getCategorias().addAll(Arrays.asList(cat3));
+		pro7.getCategorias().addAll(Arrays.asList(cat4));
+		pro8.getCategorias().addAll(Arrays.asList(cat5));
+		pro9.getCategorias().addAll(Arrays.asList(cat6));
+		pro10.getCategorias().addAll(Arrays.asList(cat6));
+		pro11.getCategorias().addAll(Arrays.asList(cat7));
 
 		categoriaRepository.saveAll(Arrays.asList(cat1, cat2, cat3, cat4, cat5, cat6, cat7));
-		produtoRepository.saveAll(Arrays.asList(pro1, pro2, pro3));
+		produtoRepository.saveAll(Arrays.asList(pro1, pro2, pro3, pro4, pro5, pro6, pro7, pro8, pro9, pro10, pro11));
 
 		Estado est1 = new Estado(null, "Minas Gerais");
 		Estado est2 = new Estado(null, "São Paulo");
