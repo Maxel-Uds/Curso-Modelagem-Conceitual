@@ -1,6 +1,7 @@
 package com.maxel.cursomc.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.util.StreamUtils;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -36,6 +37,15 @@ public class Pedido implements Serializable {
         this.instante = instante;
         this.cliente = cliente;
         this.enderecoDeEntrega = enderecoDeEntrega;
+    }
+
+    public double getValorTotal() {
+        double total = 0;
+        for(ItemPedido x : itens) {
+            total += x.getSubTotal();
+        }
+
+        return total;
     }
 
     public Integer getId() {
