@@ -1,10 +1,12 @@
 package com.maxel.cursomc.domain;
 
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.maxel.cursomc.domain.enums.EstadoPagamento;
 
 import javax.persistence.Entity;
 
 @Entity
+@JsonTypeName("pagamentoComCartao")
 public class PagamentoComCartao extends  Pagamento {
 
     private Integer numeroDeParcelas;
