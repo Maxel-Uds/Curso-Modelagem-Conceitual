@@ -1,8 +1,6 @@
 package com.maxel.cursomc.resources;
 
-import com.maxel.cursomc.domain.Categoria;
 import com.maxel.cursomc.domain.Pedido;
-import com.maxel.cursomc.dto.CategoriaDTO;
 import com.maxel.cursomc.service.PedidoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
