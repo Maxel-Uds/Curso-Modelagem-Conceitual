@@ -1,11 +1,13 @@
 package com.maxel.cursomc.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.maxel.cursomc.domain.enums.Perfil;
 import com.maxel.cursomc.domain.enums.TipoCliente;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Entity
 public class Cliente implements Serializable {
@@ -27,11 +29,16 @@ public class Cliente implements Serializable {
     @ElementCollection //Indica e cria uma tabela de uma entidade fraca com nome específico no db
     @CollectionTable(name = "TELEFONE")
     private Set<String> telefones = new HashSet<String>();
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "PERFIS")
+    private Set<Integer> perfis = new HashSet<Integer>();
     @JsonIgnore
     @OneToMany(mappedBy = "cliente")
     private List<Pedido> pedidos = new ArrayList<Pedido>();
 
-    public Cliente() {}
+    public Cliente() {
+        addPerfil(Perfil.CLIENTE);
+    }
 
     public Cliente(Integer id, String nome, String email, String cpfOuCnpj, TipoCliente tipo, String senha) {
         this.id = id;
@@ -40,6 +47,7 @@ public class Cliente implements Serializable {
         this.cpfOuCnpj = cpfOuCnpj;
         this.tipo = (tipo == null) ? null : tipo.getCod();
         this.senha = senha;
+        addPerfil(Perfil.CLIENTE);
     }
 
     public Integer getId() {
@@ -112,6 +120,14 @@ public class Cliente implements Serializable {
 
     public void setSenha(String senha) {
         this.senha = senha;
+    }
+
+    public Set<Perfil> getPerfil() {
+        return perfis.stream().map(codigo -> Perfil.toEnum(codigo)).collect(Collectors.toSet());
+    }
+
+    public void addPerfil(Perfil perfil) {
+        perfis.add(perfil.getCod());
     }
 
     @Override
