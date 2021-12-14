@@ -3,11 +3,14 @@ package com.maxel.cursomc.service;
 import com.maxel.cursomc.domain.Cidade;
 import com.maxel.cursomc.domain.Cliente;
 import com.maxel.cursomc.domain.Endereco;
+import com.maxel.cursomc.domain.enums.Perfil;
 import com.maxel.cursomc.domain.enums.TipoCliente;
 import com.maxel.cursomc.dto.ClienteDTO;
 import com.maxel.cursomc.dto.ClienteNewDTO;
 import com.maxel.cursomc.repositories.ClienteRepository;
 import com.maxel.cursomc.repositories.EnderecoRepository;
+import com.maxel.cursomc.security.UserSpringSecurity;
+import com.maxel.cursomc.service.exceptions.AuthorizationException;
 import com.maxel.cursomc.service.exceptions.DataIntegrityException;
 import com.maxel.cursomc.service.exceptions.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +36,11 @@ public class ClienteService {
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     public Cliente findById(Integer id) {
+        UserSpringSecurity loggedUser = UserService.authenticated();
+        if(loggedUser == null || !loggedUser.hasRole(Perfil.ADMIN) && !id.equals(loggedUser.getId())) {
+            throw new AuthorizationException("Acesso negado");
+        }
+
         Optional<Cliente> obj = repository.findById(id);
         return  obj.orElseThrow(() -> { throw new ObjectNotFoundException("Nenhum objeto foi encontrado com o ID: " + id); });
     }
