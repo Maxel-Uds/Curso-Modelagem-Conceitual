@@ -1,14 +1,17 @@
 package com.maxel.cursomc.service;
 
-import com.maxel.cursomc.domain.ItemPedido;
-import com.maxel.cursomc.domain.PagamentoComBoleto;
-import com.maxel.cursomc.domain.Pedido;
+import com.maxel.cursomc.domain.*;
 import com.maxel.cursomc.domain.enums.EstadoPagamento;
 import com.maxel.cursomc.repositories.ItemPedidoRepository;
 import com.maxel.cursomc.repositories.PagamentoRepository;
 import com.maxel.cursomc.repositories.PedidoRepository;
+import com.maxel.cursomc.security.UserSpringSecurity;
+import com.maxel.cursomc.service.exceptions.AuthorizationException;
 import com.maxel.cursomc.service.exceptions.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -60,5 +63,14 @@ public class PedidoService {
         itemPedidoRepository.saveAll(obj.getItens());
         emailService.sendOrderConfitmationHtmlEmail(obj);
         return obj;
+    }
+
+    public Page<Pedido> findPage(Integer page, Integer linesPerPage, String orderBy, String direction) {
+        UserSpringSecurity loggedUser = UserService.authenticated();
+        if(loggedUser == null) { throw new AuthorizationException("Acesso negado"); }
+
+        PageRequest pageRequest = PageRequest.of(page, linesPerPage, Sort.Direction.valueOf(direction), orderBy);
+        Cliente cliente = clienteService.findById(loggedUser.getId());
+        return pedidoRepository.findByCliente(cliente, pageRequest);
     }
 }
