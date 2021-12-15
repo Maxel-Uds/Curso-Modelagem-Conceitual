@@ -36,7 +36,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     //Lista dos caminhos que vão estar liberados
     private static final String[] PUBLIC_MATCHERS = {
-          "/h2-console/**",
+            "/h2-console/**"
     };
 
     //Lista dos caminhos que vão estar liberados apenas para leitura
@@ -47,7 +47,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     //Lista dos caminhos que vão estar liberados apenas para post
     private static final String[] PUBLIC_MATCHERS_POST = {
-            "/clientes/**"
+            "/clientes/**",
+            "/auth/forgot-pass/**"
     };
 
     @Override
