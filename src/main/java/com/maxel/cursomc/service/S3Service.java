@@ -1,16 +1,18 @@
 package com.maxel.cursomc.service;
 
-import com.amazonaws.AmazonClientException;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.amazonaws.AmazonServiceException;
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.PutObjectRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 @Service
 public class S3Service {
@@ -22,17 +24,28 @@ public class S3Service {
     @Value("${s3.bucket}")
     private String bucketName;
 
-    public void uplodaFile(String localFilePAth) {
+    public URI uplodaFile(MultipartFile multipartFile) {
         try {
-            File file = new File(localFilePAth);
-            s3Client.putObject(new PutObjectRequest(bucketName, "teste.jpg", file));
+            String fileName = multipartFile.getOriginalFilename();
+            InputStream inputStream = multipartFile.getInputStream();
+            String contentType = multipartFile.getContentType();
+            return uplodaFile(inputStream, fileName, contentType);
         }
-        catch(AmazonServiceException e) {
-            LOG.info("Amazon Exception: " + e.getMessage());
-            LOG.info("Status code: " + e.getErrorCode());
+        catch (IOException e) {
+            throw new RuntimeException("Erro ao fazer upload");
         }
-        catch(AmazonClientException e) {
-            LOG.info("Amazon Client Exception: " + e.getMessage());
+    }
+
+    public URI uplodaFile(InputStream inputStream, String fileName, String contentType) {
+        try {
+            ObjectMetadata objectMetadata = new ObjectMetadata();
+            objectMetadata.setContentType(contentType);
+            s3Client.putObject(bucketName, fileName, inputStream, objectMetadata);
+
+            return s3Client.getUrl(bucketName, fileName).toURI();
+        }
+        catch (URISyntaxException e) {
+            throw new RuntimeException("Erro ao converter a URL em URI");
         }
     }
 }
