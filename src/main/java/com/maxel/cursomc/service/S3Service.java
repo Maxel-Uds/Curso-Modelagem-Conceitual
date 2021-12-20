@@ -2,6 +2,7 @@ package com.maxel.cursomc.service;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.maxel.cursomc.service.exceptions.FileException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +33,7 @@ public class S3Service {
             return uplodaFile(inputStream, fileName, contentType);
         }
         catch (IOException e) {
-            throw new RuntimeException("Erro ao fazer upload");
+            throw new FileException("Erro ao fazer upload");
         }
     }
 
@@ -45,7 +46,7 @@ public class S3Service {
             return s3Client.getUrl(bucketName, fileName).toURI();
         }
         catch (URISyntaxException e) {
-            throw new RuntimeException("Erro ao converter a URL em URI");
+            throw new FileException("Erro ao converter a URL em URI");
         }
     }
 }
