@@ -23,7 +23,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
@@ -108,6 +107,16 @@ public class ClienteService {
     }
 
     public URI uploadProfilePicture(MultipartFile multipartFile) {
-        return s3Service.uplodaFile(multipartFile);
+        UserSpringSecurity loggedUser = UserService.authenticated();
+        if(loggedUser == null) {
+            throw new AuthorizationException("Acesso negado");
+        }
+
+        URI uri = s3Service.uplodaFile(multipartFile);
+        Cliente cliente = findById(loggedUser.getId());
+        cliente.setImageUrl(uri.toString());
+        repository.save(cliente);
+
+        return uri;
     }
 }
