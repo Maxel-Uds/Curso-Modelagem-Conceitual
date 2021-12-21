@@ -14,6 +14,7 @@ import com.maxel.cursomc.service.exceptions.AuthorizationException;
 import com.maxel.cursomc.service.exceptions.DataIntegrityException;
 import com.maxel.cursomc.service.exceptions.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.awt.image.BufferedImage;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
@@ -38,6 +40,11 @@ public class ClienteService {
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     @Autowired
     private S3Service s3Service;
+    @Autowired
+    private ImageService imageService;
+
+    @Value("${img.prefix.client.profile}")
+    private String prefix;
 
     public Cliente findById(Integer id) {
         UserSpringSecurity loggedUser = UserService.authenticated();
@@ -112,11 +119,9 @@ public class ClienteService {
             throw new AuthorizationException("Acesso negado");
         }
 
-        URI uri = s3Service.uplodaFile(multipartFile);
-        Cliente cliente = findById(loggedUser.getId());
-        cliente.setImageUrl(uri.toString());
-        repository.save(cliente);
+        BufferedImage jpgImage =  imageService.getJpgImageFromFile(multipartFile);
+        String fileName = prefix + loggedUser.getId() + ".jpg";
 
-        return uri;
+        return s3Service.uplodaFile(imageService.getInputStream(jpgImage, "jpg"), fileName, "image");
     }
 }
