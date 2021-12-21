@@ -45,6 +45,8 @@ public class ClienteService {
 
     @Value("${img.prefix.client.profile}")
     private String prefix;
+    @Value("${img.profile.size}")
+    private int size;
 
     public Cliente findById(Integer id) {
         UserSpringSecurity loggedUser = UserService.authenticated();
@@ -120,6 +122,8 @@ public class ClienteService {
         }
 
         BufferedImage jpgImage =  imageService.getJpgImageFromFile(multipartFile);
+        jpgImage = imageService.cropSquare(jpgImage);
+        jpgImage = imageService.resize(jpgImage, size);
         String fileName = prefix + loggedUser.getId() + ".jpg";
 
         return s3Service.uplodaFile(imageService.getInputStream(jpgImage, "jpg"), fileName, "image");
