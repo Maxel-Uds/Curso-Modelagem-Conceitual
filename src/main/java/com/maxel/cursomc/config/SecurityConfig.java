@@ -42,6 +42,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     //Lista dos caminhos que vão estar liberados apenas para leitura
     private static final String[] PUBLIC_MATCHERS_GET = {
             "/produtos/**",
+            "/estados/**",
             "/categorias/**"
     };
 
