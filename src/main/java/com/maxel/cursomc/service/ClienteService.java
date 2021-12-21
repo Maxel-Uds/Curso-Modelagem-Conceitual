@@ -70,7 +70,7 @@ public class ClienteService {
         repository.save(newObj);
     }
 
-    public  void delete(Integer id) {
+    public void delete(Integer id) {
         findById(id);
         try {
             repository.deleteById(id);
@@ -87,6 +87,20 @@ public class ClienteService {
     public Page<Cliente> findPage(Integer page, Integer linesPerPage, String orderBy, String direction) {
         PageRequest pageRequest = PageRequest.of(page, linesPerPage, Sort.Direction.valueOf(direction), orderBy);
         return repository.findAll(pageRequest);
+    }
+
+    public Cliente findByEmail(String email) {
+        UserSpringSecurity loggedUser = UserService.authenticated();
+        if(loggedUser == null || !loggedUser.hasRole(Perfil.ADMIN) && !email.equals(loggedUser.getUsername())) {
+            throw new AuthorizationException("Acesso negado");
+        }
+
+        Cliente obj = repository.findByEmail(email);
+        if(obj == null) {
+            throw  new ObjectNotFoundException("Objeto não encontrado! id: " + loggedUser.getId() + ", Tipo: " + Cliente.class.getName());
+        }
+
+        return obj;
     }
 
     public Cliente fromDto(ClienteDTO objDto) {
