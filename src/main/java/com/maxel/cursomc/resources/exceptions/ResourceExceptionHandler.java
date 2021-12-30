@@ -7,7 +7,6 @@ import com.maxel.cursomc.service.exceptions.AuthorizationException;
 import com.maxel.cursomc.service.exceptions.DataIntegrityException;
 import com.maxel.cursomc.service.exceptions.FileException;
 import com.maxel.cursomc.service.exceptions.ObjectNotFoundException;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
