@@ -1,6 +1,7 @@
 package com.maxel.cursomc.service;
 
 import com.maxel.cursomc.domain.Cliente;
+import com.maxel.cursomc.dto.NewPasswordDTO;
 import com.maxel.cursomc.repositories.ClienteRepository;
 import com.maxel.cursomc.service.exceptions.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,16 @@ public class AuthService {
         }
 
         String newPass = newPassword();
+        cliente.setSenha(bCryptPasswordEncoder.encode(newPass));
+
+        clienteRepository.save(cliente);
+        emailService.sendNewPasswordEail(cliente, newPass);
+    }
+
+    public void changePassword(NewPasswordDTO newPassDTO) {
+        Cliente cliente = clienteRepository.findByEmail(newPassDTO.getEmail());
+
+        String newPass = newPassDTO.getNewPass();
         cliente.setSenha(bCryptPasswordEncoder.encode(newPass));
 
         clienteRepository.save(cliente);

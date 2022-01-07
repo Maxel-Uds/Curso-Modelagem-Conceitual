@@ -2,6 +2,7 @@ package com.maxel.cursomc.resources;
 
 import com.maxel.cursomc.domain.Cliente;
 import com.maxel.cursomc.dto.EmailDTO;
+import com.maxel.cursomc.dto.NewPasswordDTO;
 import com.maxel.cursomc.repositories.ClienteRepository;
 import com.maxel.cursomc.security.JWTUtil;
 import com.maxel.cursomc.security.UserSpringSecurity;
@@ -40,6 +41,12 @@ public class AuthResources {
     @RequestMapping(value = "/forgot-pass", method = RequestMethod.POST)
     public ResponseEntity<Void> forgotPass(@Valid @RequestBody EmailDTO emailDTO) {
         authService.sendNewPassword(emailDTO.getEmail());
+        return ResponseEntity.noContent().build();
+    }
+
+    @RequestMapping(value = "/change-pass", method = RequestMethod.POST)
+    public ResponseEntity<Void> changePass(@Valid @RequestBody NewPasswordDTO newPassDTO) {
+        authService.changePassword(newPassDTO);
         return ResponseEntity.noContent().build();
     }
 }
