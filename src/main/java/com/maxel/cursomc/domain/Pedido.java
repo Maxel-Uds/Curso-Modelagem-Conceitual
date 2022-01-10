@@ -25,7 +25,7 @@ public class Pedido implements Serializable {
     private Endereco enderecoDeEntrega;
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "pedido")
     private Pagamento pagamento;
-    @OneToMany( mappedBy = "id.pedido")
+    @OneToMany(mappedBy = "id.pedido", cascade = CascadeType.ALL)
     private Set<ItemPedido> itens = new HashSet<ItemPedido>();
 
     public Pedido() {}
