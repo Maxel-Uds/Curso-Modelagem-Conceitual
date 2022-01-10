@@ -3,12 +3,15 @@ package com.maxel.cursomc.service;
 import com.maxel.cursomc.domain.Cidade;
 import com.maxel.cursomc.domain.Cliente;
 import com.maxel.cursomc.domain.Endereco;
+import com.maxel.cursomc.domain.Pedido;
 import com.maxel.cursomc.dto.EnderecoDTO;
 import com.maxel.cursomc.repositories.EnderecoRepository;
+import com.maxel.cursomc.repositories.PedidoRepository;
 import com.maxel.cursomc.service.exceptions.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -20,6 +23,8 @@ public class EnderecoService {
     private ClienteService clienteService;
     @Autowired
     private CidadeService cidadeService;
+    @Autowired
+    private PedidoRepository pedidoRepository;
 
     public Endereco findById(Integer id) {
         Optional<Endereco> endereco =enderecoRepository.findById(id);
@@ -43,13 +48,6 @@ public class EnderecoService {
         enderecoRepository.save(end);
     }
 
-    public void delete(Integer id) {
-        Endereco endereco = findById(id);
-        endereco.setCliente(null);
-
-        enderecoRepository.save(endereco);
-    }
-
     public void create(EnderecoDTO endereco) {
         Cidade cidade = cidadeService.findById(endereco.getCidadeId());
         Cliente cliente = clienteService.findByEmail(endereco.getClienteEmail());
@@ -65,5 +63,19 @@ public class EnderecoService {
         );
 
         enderecoRepository.save(end);
+    }
+
+    public void delete(Integer id) {
+        Endereco endereco = findById(id);
+        List<Pedido> pedidos = pedidoRepository.findAll();
+
+        var haveOnePurchase = pedidos.stream().anyMatch(pedido -> pedido.getEnderecoDeEntrega().getId() == id);
+
+        if(haveOnePurchase) {
+            endereco.setCliente(null);
+            enderecoRepository.save(endereco);
+        } else {
+            enderecoRepository.deleteById(id);
+        }
     }
 }
