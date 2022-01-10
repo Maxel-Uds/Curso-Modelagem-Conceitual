@@ -43,6 +43,8 @@ public class ClienteService {
     private S3Service s3Service;
     @Autowired
     private ImageService imageService;
+    @Autowired
+    private AuthService authService;
 
     @Value("${img.prefix.client.profile}")
     private String prefix;
@@ -113,7 +115,9 @@ public class ClienteService {
     }
 
     public Cliente fromDto(ClienteNewDTO objDto) {
-        Cliente cliente = new Cliente(null, objDto.getNome(), objDto.getEmail(), objDto.getCpfOuCnpj(), TipoCliente.toEnum(objDto.getTipo()), bCryptPasswordEncoder.encode(objDto.getSenha()));
+        String senha = authService.sendPassToNewClient(objDto.getEmail());
+
+        Cliente cliente = new Cliente(null, objDto.getNome(), objDto.getEmail(), objDto.getCpfOuCnpj(), TipoCliente.toEnum(objDto.getTipo()), bCryptPasswordEncoder.encode(senha));
         Cidade cidade = new Cidade(objDto.getCidadeId(), null, null);
 
         Endereco endereco = new Endereco(null, objDto.getLogradouro(), objDto.getNumero(), objDto.getComplemento(), objDto.getBairro(), objDto.getCep(), cliente, cidade);

@@ -32,7 +32,14 @@ public class AuthService {
         cliente.setSenha(bCryptPasswordEncoder.encode(newPass));
 
         clienteRepository.save(cliente);
-        emailService.sendNewPasswordEail(cliente, newPass);
+        emailService.sendNewPasswordEmail(cliente, newPass);
+    }
+
+    public String sendPassToNewClient(String email) {
+        String newPass = newPassword();
+
+        emailService.sendNewPasswordEmail(email, newPass);
+        return newPass;
     }
 
     public void changePassword(NewPasswordDTO newPassDTO) {
@@ -42,7 +49,7 @@ public class AuthService {
         cliente.setSenha(bCryptPasswordEncoder.encode(newPass));
 
         clienteRepository.save(cliente);
-        emailService.sendNewPasswordEail(cliente, newPass);
+        emailService.sendNewPasswordEmail(cliente, newPass);
     }
 
     private String newPassword() {

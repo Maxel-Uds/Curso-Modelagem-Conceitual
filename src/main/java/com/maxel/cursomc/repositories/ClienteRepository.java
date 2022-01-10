@@ -8,4 +8,6 @@ public interface ClienteRepository extends JpaRepository<Cliente, Integer> {
 
     @Transactional(readOnly = true) //Indica que não vai envolver uma operação de banco de dados
     Cliente findByEmail(String email);
+    @Transactional(readOnly = true)
+    Cliente findByCpfOuCnpj(String cpfOuCnpj);
 }

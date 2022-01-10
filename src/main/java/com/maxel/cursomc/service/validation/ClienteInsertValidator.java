@@ -25,6 +25,15 @@ public class ClienteInsertValidator implements ConstraintValidator<ClienteInsert
     @Override
     public boolean isValid(ClienteNewDTO objDto, ConstraintValidatorContext context) {
         List<FieldMessage> list = new ArrayList<>();
+        Cliente alreadyExists = clienteRepository.findByCpfOuCnpj(objDto.getCpfOuCnpj());
+
+        if(alreadyExists != null && objDto.getTipo().equals(TipoCliente.PESSOAFISICA.getCod())) {
+            list.add(new FieldMessage("cpfOuCnpj", "CPF já cadastrado"));
+        }
+
+        if(alreadyExists != null && objDto.getTipo().equals(TipoCliente.PESSOAJURIDICA.getCod())) {
+            list.add(new FieldMessage("cpfOuCnpj", "CNPJ já cadastrado"));
+        }
 
         if(objDto.getTipo().equals(TipoCliente.PESSOAFISICA.getCod()) && !BR.isValidCPF(objDto.getCpfOuCnpj())) {
             list.add(new FieldMessage("cpfOuCnpj", "CPF inválido"));
