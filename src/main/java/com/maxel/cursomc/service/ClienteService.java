@@ -7,6 +7,7 @@ import com.maxel.cursomc.domain.enums.Perfil;
 import com.maxel.cursomc.domain.enums.TipoCliente;
 import com.maxel.cursomc.dto.ClienteDTO;
 import com.maxel.cursomc.dto.ClienteNewDTO;
+import com.maxel.cursomc.dto.ClienteUpdateDTO;
 import com.maxel.cursomc.repositories.ClienteRepository;
 import com.maxel.cursomc.repositories.EnderecoRepository;
 import com.maxel.cursomc.security.UserSpringSecurity;
@@ -64,8 +65,8 @@ public class ClienteService {
         return  repository.save(obj);
     }
 
-    public void update(Cliente obj) {
-        Cliente newObj = findById(obj.getId());
+    public void update(Cliente obj, String email) {
+        Cliente newObj = findByEmail(email);
         updateData(newObj, obj);
         repository.save(newObj);
     }
@@ -103,43 +104,54 @@ public class ClienteService {
         return obj;
     }
 
-    public Cliente fromDto(ClienteDTO objDto) {
-        return new Cliente(objDto.getId(), objDto.getNome(), objDto.getEmail(), null, null, null);
+    public Cliente fromDto(ClienteUpdateDTO objDto) {
+        Cliente cliente = new Cliente(null, objDto.getNome(), objDto.getEmail(), null, null, null);
+
+        addTelefone(cliente, objDto.getTelefone1(), objDto.getTelefone2(), objDto.getTelefone3());
+
+        return cliente;
     }
 
     public Cliente fromDto(ClienteNewDTO objDto) {
         Cliente cliente = new Cliente(null, objDto.getNome(), objDto.getEmail(), objDto.getCpfOuCnpj(), TipoCliente.toEnum(objDto.getTipo()), bCryptPasswordEncoder.encode(objDto.getSenha()));
         Cidade cidade = new Cidade(objDto.getCidadeId(), null, null);
+
         Endereco endereco = new Endereco(null, objDto.getLogradouro(), objDto.getNumero(), objDto.getComplemento(), objDto.getBairro(), objDto.getCep(), cliente, cidade);
         cliente.getEnderecos().add(endereco);
-        cliente.getTelefones().add(objDto.getTelefone1());
 
-        if(objDto.getTelefone2() != null ) {
-            cliente.getTelefones().add(objDto.getTelefone2());
-        }
-        if(objDto.getTelefone3() != null ) {
-            cliente.getTelefones().add(objDto.getTelefone3());
-        }
+        addTelefone(cliente, objDto.getTelefone1(), objDto.getTelefone2(), objDto.getTelefone3());
 
         return cliente;
     }
 
-    private void updateData(Cliente newObj, Cliente obj) {
-        newObj.setNome(obj.getNome());
-        newObj.setEmail(obj.getEmail());
-    }
-
     public URI uploadProfilePicture(MultipartFile multipartFile) {
         UserSpringSecurity loggedUser = UserService.authenticated();
-        if(loggedUser == null) {
+        if (loggedUser == null) {
             throw new AuthorizationException("Acesso negado");
         }
 
-        BufferedImage jpgImage =  imageService.getJpgImageFromFile(multipartFile);
+        BufferedImage jpgImage = imageService.getJpgImageFromFile(multipartFile);
         jpgImage = imageService.cropSquare(jpgImage);
         jpgImage = imageService.resize(jpgImage, size);
         String fileName = prefix + loggedUser.getId() + ".jpg";
 
         return s3Service.uplodaFile(imageService.getInputStream(jpgImage, "jpg"), fileName, "image");
+    }
+
+    private void updateData(Cliente newObj, Cliente obj) {
+        newObj.setNome(obj.getNome());
+        newObj.setEmail(obj.getEmail());
+        newObj.setTelefones(obj.getTelefones());
+    }
+
+    private void addTelefone(Cliente cliente, String telefone1, String telefone2, String telefone3) {
+        cliente.getTelefones().add(telefone1);
+
+        if(telefone2 != null ) {
+            cliente.getTelefones().add(telefone2);
+        }
+        if(telefone3 != null ) {
+            cliente.getTelefones().add(telefone3);
+        }
     }
 }

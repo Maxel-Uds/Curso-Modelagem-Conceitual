@@ -3,6 +3,7 @@ package com.maxel.cursomc.resources;
 import com.maxel.cursomc.domain.Cliente;
 import com.maxel.cursomc.dto.ClienteDTO;
 import com.maxel.cursomc.dto.ClienteNewDTO;
+import com.maxel.cursomc.dto.ClienteUpdateDTO;
 import com.maxel.cursomc.service.ClienteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -13,7 +14,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
-import java.io.IOException;
 import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -45,11 +45,10 @@ public class ClienteResource {
         return ResponseEntity.created(uri).build();
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-    public ResponseEntity<Void> update(@PathVariable Integer id, @RequestBody ClienteDTO objDto) {
+    @RequestMapping(value = "/email", method = RequestMethod.PUT)
+    public ResponseEntity<Void> update(@RequestParam(value = "value") String email, @RequestBody @Valid ClienteUpdateDTO objDto) {
         Cliente obj = service.fromDto(objDto);
-        obj.setId(id);
-        service.update(obj);
+        service.update(obj, email);
         return ResponseEntity.noContent().build();
     }
 
