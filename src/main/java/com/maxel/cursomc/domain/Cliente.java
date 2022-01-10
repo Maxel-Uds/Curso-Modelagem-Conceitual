@@ -130,6 +130,14 @@ public class Cliente implements Serializable {
         perfis.add(perfil.getCod());
     }
 
+    public Set<Integer> getPerfisList() {
+        return  perfis;
+    }
+
+    public void setPerfisList(Set<Integer> perfis) {
+        this.perfis = perfis;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

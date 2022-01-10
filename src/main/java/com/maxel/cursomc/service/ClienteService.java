@@ -5,7 +5,6 @@ import com.maxel.cursomc.domain.Cliente;
 import com.maxel.cursomc.domain.Endereco;
 import com.maxel.cursomc.domain.enums.Perfil;
 import com.maxel.cursomc.domain.enums.TipoCliente;
-import com.maxel.cursomc.dto.ClienteDTO;
 import com.maxel.cursomc.dto.ClienteNewDTO;
 import com.maxel.cursomc.dto.ClienteUpdateDTO;
 import com.maxel.cursomc.repositories.ClienteRepository;
@@ -29,6 +28,8 @@ import java.awt.image.BufferedImage;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class ClienteService {
@@ -126,6 +127,21 @@ public class ClienteService {
         addTelefone(cliente, objDto.getTelefone1(), objDto.getTelefone2(), objDto.getTelefone3());
 
         return cliente;
+    }
+
+    public void up(String email) {
+        Cliente cliente = repository.findByEmail(email);
+        cliente.addPerfil(Perfil.ADMIN);
+
+        repository.save(cliente);
+    }
+
+    public void down(String email) {
+        Cliente cliente = repository.findByEmail(email);
+        Set<Integer> perfisList = cliente.getPerfisList().stream().filter(perfil -> perfil != Perfil.ADMIN.getCod()).collect(Collectors.toSet());
+        cliente.setPerfisList(perfisList);
+
+        repository.save(cliente);
     }
 
     public URI uploadProfilePicture(MultipartFile multipartFile) {

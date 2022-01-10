@@ -75,6 +75,20 @@ public class ClienteResource {
         return ResponseEntity.ok().body(listDto);
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @RequestMapping(value = "/upgrade-role" , method = RequestMethod.PUT)
+    public ResponseEntity<Void> upgradeRole(@RequestParam(value = "value") String email) {
+        service.up(email);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @RequestMapping(value = "/downgrade-role" , method = RequestMethod.PUT)
+    public ResponseEntity<Void> downgradeRole(@RequestParam(value = "value") String email) {
+        service.down(email);
+        return ResponseEntity.noContent().build();
+    }
+
     @RequestMapping(value = "/picture", method = RequestMethod.POST)
     public ResponseEntity<URI> uploadProfilePicture(@RequestParam(name = "file") MultipartFile multipartFile) {
         URI uri = service.uploadProfilePicture(multipartFile);
