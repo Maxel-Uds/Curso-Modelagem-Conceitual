@@ -3,6 +3,7 @@ package com.maxel.cursomc.service;
 import com.maxel.cursomc.domain.Cidade;
 import com.maxel.cursomc.domain.Cliente;
 import com.maxel.cursomc.domain.Endereco;
+import com.maxel.cursomc.domain.enums.EstadoPagamento;
 import com.maxel.cursomc.domain.enums.Perfil;
 import com.maxel.cursomc.domain.enums.TipoCliente;
 import com.maxel.cursomc.dto.ClienteNewDTO;
@@ -75,12 +76,14 @@ public class ClienteService {
     }
 
     public void delete(Integer id) {
-        findById(id);
-        try {
-            repository.deleteById(id);
+        Cliente cliente = findById(id);
+        var anyPurchasePending = cliente.getPedidos().stream().anyMatch(pedido -> pedido.getPagamento().getEstado() == EstadoPagamento.PENDENTE);
+
+        if(anyPurchasePending) {
+            throw new DataIntegrityException("O Cliente não pode ser excluído porque possuí pedidos pendentes associados a ele");
         }
-        catch (DataIntegrityViolationException e) {
-            throw new DataIntegrityException("O Cliente não pode ser excluído porque possuí pedidos associados a ele");
+        else {
+            repository.deleteById(id);
         }
     }
 
