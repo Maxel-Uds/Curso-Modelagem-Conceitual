@@ -22,7 +22,7 @@ public class Pedido implements Serializable {
     private Cliente cliente;
     @ManyToOne
     @JoinColumn(name = "endereco_de_entrega_id")
-    private Endereco enderecoDeEntrega;
+    private EnderecoDeEntrega enderecoDeEntrega;
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "pedido")
     private Pagamento pagamento;
     @OneToMany(mappedBy = "id.pedido", cascade = CascadeType.ALL)
@@ -30,7 +30,7 @@ public class Pedido implements Serializable {
 
     public Pedido() {}
 
-    public Pedido(Integer id, Date instante, Cliente cliente, Endereco enderecoDeEntrega) {
+    public Pedido(Integer id, Date instante, Cliente cliente, EnderecoDeEntrega enderecoDeEntrega) {
         this.id = id;
         this.instante = instante;
         this.cliente = cliente;
@@ -70,11 +70,11 @@ public class Pedido implements Serializable {
         this.cliente = cliente;
     }
 
-    public Endereco getEnderecoDeEntrega() {
+    public EnderecoDeEntrega getEnderecoDeEntrega() {
         return enderecoDeEntrega;
     }
 
-    public void setEnderecoDeEntrega(Endereco enderecoDeEntrega) {
+    public void setEnderecoDeEntrega(EnderecoDeEntrega enderecoDeEntrega) {
         this.enderecoDeEntrega = enderecoDeEntrega;
     }
 

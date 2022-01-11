@@ -2,6 +2,7 @@ package com.maxel.cursomc.service;
 
 import com.maxel.cursomc.domain.*;
 import com.maxel.cursomc.domain.enums.EstadoPagamento;
+import com.maxel.cursomc.dto.PedidoDTO;
 import com.maxel.cursomc.repositories.ItemPedidoRepository;
 import com.maxel.cursomc.repositories.PagamentoRepository;
 import com.maxel.cursomc.repositories.PedidoRepository;
@@ -33,6 +34,10 @@ public class PedidoService {
     private ClienteService clienteService;
     @Autowired
     private EmailService emailService;
+    @Autowired
+    private EnderecoDeEntregaService entregaService;
+    @Autowired
+    private EnderecoService enderecoService;
 
     public Pedido findById(Integer id) {
         Optional<Pedido> pedido = pedidoRepository.findById(id);
@@ -40,29 +45,32 @@ public class PedidoService {
     }
 
     @Transactional
-    public Pedido insert(Pedido obj) {
-        obj.setId(null);
-        obj.setInstante(new Date());
-        obj.setCliente(clienteService.findById(obj.getCliente().getId()));
-        obj.getPagamento().setEstado(EstadoPagamento.PENDENTE);
-        obj.getPagamento().setPedido(obj);
-        if(obj.getPagamento() instanceof PagamentoComBoleto) {
-            PagamentoComBoleto pagto = (PagamentoComBoleto) obj.getPagamento();
-            BoletoService.preencherPagamentocomBoleto(pagto, obj.getInstante());
-        }
-        obj = pedidoRepository.save(obj);
-        pagamentoRepository.save(obj.getPagamento());
+    public Pedido insert(PedidoDTO pedidoDTO) {
+        Cliente client = clienteService.findById(pedidoDTO.getCliente().getId());
+        Pedido pedido = new Pedido(null, (new Date()), client, addAddress(pedidoDTO));
 
-        for(ItemPedido x : obj.getItens()) {
-            x.setDesconto(0.00);
-            x.setProduto(produtoService.findById(x.getProduto().getId()));
-            x.setPreco(x.getProduto().getPreco());
-            x.setPedido(obj);
+        pedido.setPagamento(pedidoDTO.getPagamento());
+        pedido.getPagamento().setEstado(EstadoPagamento.PENDENTE);
+        pedido.getPagamento().setPedido(pedido);
+
+        if(pedido.getPagamento() instanceof PagamentoComBoleto) {
+            PagamentoComBoleto pagto = (PagamentoComBoleto) pedido.getPagamento();
+            BoletoService.preencherPagamentocomBoleto(pagto, pedido.getInstante());
         }
 
-        itemPedidoRepository.saveAll(obj.getItens());
-        emailService.sendOrderConfitmationHtmlEmail(obj);
-        return obj;
+        pedido = pedidoRepository.save(pedido);
+        pagamentoRepository.save(pedido.getPagamento());
+
+        for(ItemPedido item : pedido.getItens()) {
+            item.setDesconto(0.00);
+            item.setProduto(produtoService.findById(item.getProduto().getId()));
+            item.setPreco(item.getProduto().getPreco());
+            item.setPedido(pedido);
+        }
+
+        itemPedidoRepository.saveAll(pedido.getItens());
+        emailService.sendOrderConfitmationHtmlEmail(pedido);
+        return pedido;
     }
 
     public Page<Pedido> findPage(Integer page, Integer linesPerPage, String orderBy, String direction) {
@@ -72,5 +80,16 @@ public class PedidoService {
         PageRequest pageRequest = PageRequest.of(page, linesPerPage, Sort.Direction.valueOf(direction), orderBy);
         Cliente cliente = clienteService.findById(loggedUser.getId());
         return pedidoRepository.findByCliente(cliente, pageRequest);
+    }
+
+    private EnderecoDeEntrega addAddress(PedidoDTO ped) {
+        var enderecoDb = enderecoService.findById(ped.getEnderecoDeEntrega().getId());
+        var entrega =  entregaService.findById(ped.getEnderecoDeEntrega().getId());
+
+        if(entrega != null) {
+            return entrega;
+        } else {
+            return entregaService.insert(enderecoDb);
+        }
     }
 }

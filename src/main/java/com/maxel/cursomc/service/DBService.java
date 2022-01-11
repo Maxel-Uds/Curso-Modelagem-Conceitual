@@ -1,6 +1,7 @@
 package com.maxel.cursomc.service;
 
 import com.maxel.cursomc.domain.*;
+import com.maxel.cursomc.domain.EnderecoDeEntrega;
 import com.maxel.cursomc.domain.enums.EstadoPagamento;
 import com.maxel.cursomc.domain.enums.Perfil;
 import com.maxel.cursomc.domain.enums.TipoCliente;
@@ -35,6 +36,8 @@ public class DBService {
     private ItemPedidoRepository itemPedidoRepository;
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
+    @Autowired
+    private EnderecoDeEntregaRepository entregaRepository;
 
     public void instantiateTestDatabase() throws Exception {
         Categoria cat1 = new Categoria(null, "Informática");
@@ -193,9 +196,13 @@ public class DBService {
         clienteRepository.saveAll(Arrays.asList(cli1, cli2));
         enderecoRepository.saveAll(Arrays.asList(e1, e2, e3));
 
+        EnderecoDeEntrega entrega1 = new EnderecoDeEntrega(e1);
+        EnderecoDeEntrega entrega2 = new EnderecoDeEntrega(e2);
+        entregaRepository.saveAll(Arrays.asList(entrega1, entrega2));
+
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-        Pedido ped1 = new Pedido(null, sdf.parse("30/09/2021 10:32"), cli1, e1);
-        Pedido ped2 = new Pedido(null, sdf.parse("10/11/2021 19:27"), cli1, e2);
+        Pedido ped1 = new Pedido(null, sdf.parse("30/09/2021 10:32"), cli1, entrega1);
+        Pedido ped2 = new Pedido(null, sdf.parse("10/11/2021 19:27"), cli1, entrega2);
 
         Pagamento pagto1 = new PagamentoComCartao(null, EstadoPagamento.QUITADO, ped1,6);
         Pagamento pagto2 = new PagamentoComBoleto(null, EstadoPagamento.PENDENTE, ped2, sdf.parse("20/11/2021 00:00"), null);

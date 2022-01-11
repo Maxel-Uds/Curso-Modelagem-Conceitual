@@ -1,8 +1,7 @@
 package com.maxel.cursomc.resources;
 
-import com.maxel.cursomc.domain.Categoria;
 import com.maxel.cursomc.domain.Pedido;
-import com.maxel.cursomc.dto.CategoriaDTO;
+import com.maxel.cursomc.dto.PedidoDTO;
 import com.maxel.cursomc.service.PedidoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -27,8 +26,8 @@ public class PedidoResource {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<Void> insert(@Valid @RequestBody Pedido obj) {
-        obj = pedidoService.insert(obj);
+    public ResponseEntity<Void> insert(@Valid @RequestBody PedidoDTO pedidoDTO) {
+        Pedido obj = pedidoService.insert(pedidoDTO);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(obj.getId()).toUri();
         return  ResponseEntity.created(uri).build();
     }
