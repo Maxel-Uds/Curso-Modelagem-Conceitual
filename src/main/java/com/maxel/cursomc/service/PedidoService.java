@@ -47,7 +47,10 @@ public class PedidoService {
     @Transactional
     public Pedido insert(PedidoDTO pedidoDTO) {
         Cliente client = clienteService.findById(pedidoDTO.getCliente().getId());
-        Pedido pedido = new Pedido(null, (new Date()), client, addAddress(pedidoDTO));
+        EnderecoDeEntrega entrega = addAddress(pedidoDTO);
+        Pedido pedido = new Pedido(null, (new Date()), client, entrega);
+
+        entrega.setPedido(pedido);
 
         pedido.setPagamento(pedidoDTO.getPagamento());
         pedido.getPagamento().setEstado(EstadoPagamento.PENDENTE);
@@ -58,6 +61,7 @@ public class PedidoService {
             BoletoService.preencherPagamentocomBoleto(pagto, pedido.getInstante());
         }
 
+        entregaService.insert(entrega);
         pedido = pedidoRepository.save(pedido);
         pagamentoRepository.save(pedido.getPagamento());
 
@@ -69,7 +73,7 @@ public class PedidoService {
         }
 
         itemPedidoRepository.saveAll(pedido.getItens());
-        emailService.sendOrderConfitmationHtmlEmail(pedido);
+        //emailService.sendOrderConfitmationHtmlEmail(pedido);
         return pedido;
     }
 
@@ -84,12 +88,6 @@ public class PedidoService {
 
     private EnderecoDeEntrega addAddress(PedidoDTO ped) {
         var enderecoDb = enderecoService.findById(ped.getEnderecoDeEntrega().getId());
-        var entrega =  entregaService.findById(ped.getEnderecoDeEntrega().getId());
-
-        if(entrega != null) {
-            return entrega;
-        } else {
-            return entregaService.insert(enderecoDb);
-        }
+        return entregaService.generateAddress(enderecoDb);
     }
 }

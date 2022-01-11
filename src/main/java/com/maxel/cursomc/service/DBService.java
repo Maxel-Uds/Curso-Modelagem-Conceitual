@@ -198,11 +198,14 @@ public class DBService {
 
         EnderecoDeEntrega entrega1 = new EnderecoDeEntrega(e1);
         EnderecoDeEntrega entrega2 = new EnderecoDeEntrega(e2);
-        entregaRepository.saveAll(Arrays.asList(entrega1, entrega2));
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         Pedido ped1 = new Pedido(null, sdf.parse("30/09/2021 10:32"), cli1, entrega1);
         Pedido ped2 = new Pedido(null, sdf.parse("10/11/2021 19:27"), cli1, entrega2);
+
+        entrega1.setPedido(ped1);
+        entrega2.setPedido(ped2);
+
 
         Pagamento pagto1 = new PagamentoComCartao(null, EstadoPagamento.QUITADO, ped1,6);
         Pagamento pagto2 = new PagamentoComBoleto(null, EstadoPagamento.PENDENTE, ped2, sdf.parse("20/11/2021 00:00"), null);
@@ -211,6 +214,7 @@ public class DBService {
         ped2.setPagamento(pagto2);
         cli1.getPedidos().addAll(Arrays.asList(ped1, ped2));
 
+        entregaRepository.saveAll(Arrays.asList(entrega1, entrega2));
         pedidoRepository.saveAll(Arrays.asList(ped1, ped2));
         pagamentoRepository.saveAll(Arrays.asList(pagto1, pagto2));
 

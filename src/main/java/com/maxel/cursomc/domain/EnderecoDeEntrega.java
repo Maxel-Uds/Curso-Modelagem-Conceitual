@@ -2,14 +2,13 @@ package com.maxel.cursomc.domain;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.lang.reflect.Array;
-import java.util.Date;
 import java.util.Objects;
 
 @Entity
 public class EnderecoDeEntrega implements Serializable {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String logradouro;
     private String numero;
@@ -21,10 +20,13 @@ public class EnderecoDeEntrega implements Serializable {
     @JoinColumn(name = "cidade_id")
     private Cidade cidade;
 
+    @OneToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "pedido_id")
+    private Pedido pedido;
+
     public EnderecoDeEntrega() {}
 
     public EnderecoDeEntrega(Endereco endereco) {
-        this.id = endereco.getId();
         this.logradouro = endereco.getLogradouro();
         this.numero = endereco.getNumero();
         this.complemento = endereco.getComplemento();
@@ -87,6 +89,14 @@ public class EnderecoDeEntrega implements Serializable {
 
     public void setCidade(Cidade cidade) {
         this.cidade = cidade;
+    }
+
+    public Pedido getPedido() {
+        return pedido;
+    }
+
+    public void setPedido(Pedido pedido) {
+        this.pedido = pedido;
     }
 
     @Override
