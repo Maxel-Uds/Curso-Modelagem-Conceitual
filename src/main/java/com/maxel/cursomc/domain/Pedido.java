@@ -20,7 +20,7 @@ public class Pedido implements Serializable {
     @ManyToOne
     @JoinColumn(name = "cliente_id")
     private Cliente cliente;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "endereco_de_entrega_id")
     private EnderecoDeEntrega enderecoDeEntrega;
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "pedido")
