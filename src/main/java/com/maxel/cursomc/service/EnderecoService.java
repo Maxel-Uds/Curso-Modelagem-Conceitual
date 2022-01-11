@@ -66,16 +66,7 @@ public class EnderecoService {
     }
 
     public void delete(Integer id) {
-        Endereco endereco = findById(id);
-        List<Pedido> pedidos = pedidoRepository.findAll();
-
-        var haveOnePurchase = pedidos.stream().anyMatch(pedido -> pedido.getEnderecoDeEntrega().getId() == id);
-
-        if(haveOnePurchase) {
-            endereco.setCliente(null);
-            enderecoRepository.save(endereco);
-        } else {
-            enderecoRepository.deleteById(id);
-        }
+         findById(id);
+         enderecoRepository.deleteById(id);
     }
 }
