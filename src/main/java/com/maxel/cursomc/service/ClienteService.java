@@ -141,9 +141,7 @@ public class ClienteService {
 
     public void down(String email) {
         Cliente cliente = repository.findByEmail(email);
-        Set<Integer> perfisList = cliente.getPerfisList().stream().filter(perfil -> perfil != Perfil.ADMIN.getCod()).collect(Collectors.toSet());
-        cliente.setPerfisList(perfisList);
-
+        cliente.removePerfil(Perfil.ADMIN.getCod());
         repository.save(cliente);
     }
 

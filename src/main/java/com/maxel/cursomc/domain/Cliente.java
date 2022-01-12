@@ -130,12 +130,8 @@ public class Cliente implements Serializable {
         perfis.add(perfil.getCod());
     }
 
-    public Set<Integer> getPerfisList() {
-        return  perfis;
-    }
-
-    public void setPerfisList(Set<Integer> perfis) {
-        this.perfis = perfis;
+    public void removePerfil(Integer perfil) {
+        perfis.remove(perfil);
     }
 
     @Override
