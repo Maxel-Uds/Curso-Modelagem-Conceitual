@@ -65,14 +65,14 @@ public class PedidoService {
         pedido = pedidoRepository.save(pedido);
         pagamentoRepository.save(pedido.getPagamento());
 
-        for(ItemPedido item : pedido.getItens()) {
+        for(ItemPedido item : pedidoDTO.getItens()) {
             item.setDesconto(0.00);
             item.setProduto(produtoService.findById(item.getProduto().getId()));
             item.setPreco(item.getProduto().getPreco());
             item.setPedido(pedido);
         }
 
-        itemPedidoRepository.saveAll(pedido.getItens());
+        itemPedidoRepository.saveAll(pedidoDTO.getItens());
         emailService.sendOrderConfitmationHtmlEmail(pedido);
         return pedido;
     }

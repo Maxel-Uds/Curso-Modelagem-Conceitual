@@ -6,7 +6,8 @@ import com.maxel.cursomc.domain.ItemPedido;
 import com.maxel.cursomc.domain.Pagamento;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public class PedidoDTO implements Serializable {
 
@@ -17,11 +18,11 @@ public class PedidoDTO implements Serializable {
 
     private Pagamento pagamento;
 
-    private List<ItemPedido> itens;
+    private Set<ItemPedido> itens = new HashSet<ItemPedido>();
 
     public PedidoDTO() {}
 
-    public PedidoDTO(Cliente cliente, Endereco enderecoDeEntrega, Pagamento pagamento, List<ItemPedido> itens) {
+    public PedidoDTO(Cliente cliente, Endereco enderecoDeEntrega, Pagamento pagamento, Set<ItemPedido> itens) {
         this.cliente = cliente;
         this.enderecoDeEntrega = enderecoDeEntrega;
         this.pagamento = pagamento;
@@ -52,11 +53,11 @@ public class PedidoDTO implements Serializable {
         this.pagamento = pagamento;
     }
 
-    public List<ItemPedido> getItens() {
+    public Set<ItemPedido> getItens() {
         return itens;
     }
 
-    public void setItens(List<ItemPedido> itens) {
+    public void setItens(Set<ItemPedido> itens) {
         this.itens = itens;
     }
 }

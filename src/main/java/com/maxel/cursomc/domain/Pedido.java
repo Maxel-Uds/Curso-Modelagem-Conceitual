@@ -24,7 +24,7 @@ public class Pedido implements Serializable {
     @JoinColumn(name = "cliente_id")
     @JsonIgnore
     private Cliente cliente;
-    @OneToOne(cascade = CascadeType.REMOVE)
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "endereco_de_entrega_id")
     private EnderecoDeEntrega enderecoDeEntrega;
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "pedido")
