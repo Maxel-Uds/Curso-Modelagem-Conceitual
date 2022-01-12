@@ -10,6 +10,8 @@ import com.maxel.cursomc.repositories.PedidoRepository;
 import com.maxel.cursomc.security.UserSpringSecurity;
 import com.maxel.cursomc.service.exceptions.AuthorizationException;
 import com.maxel.cursomc.service.exceptions.ObjectNotFoundException;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,6 +19,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.Optional;
 
@@ -49,7 +53,8 @@ public class PedidoService {
     public Pedido insert(PedidoDTO pedidoDTO) {
         Cliente client = clienteService.findById(pedidoDTO.getCliente().getId());
         EnderecoDeEntrega entrega = addAddress(pedidoDTO);
-        Pedido pedido = new Pedido(null, (new Date()), client, entrega);
+        Date instante = currentTime(pedidoDTO);
+        Pedido pedido = new Pedido(null, instante, client, entrega);
 
         entrega.setPedido(pedido);
 
@@ -85,6 +90,11 @@ public class PedidoService {
         PageRequest pageRequest = PageRequest.of(page, linesPerPage, Sort.Direction.valueOf(direction), orderBy);
         Cliente cliente = clienteService.findById(loggedUser.getId());
         return pedidoRepository.findByCliente(cliente, pageRequest);
+    }
+
+    private Date currentTime(PedidoDTO pedidoDTO) {
+        var hoursUntilUtc = (pedidoDTO.getMinutosUntilUtc() * -1) / 60;
+        return (DateTime.now(DateTimeZone.UTC).plusHours(hoursUntilUtc)).toDate();
     }
 
     private EnderecoDeEntrega addAddress(PedidoDTO ped) {

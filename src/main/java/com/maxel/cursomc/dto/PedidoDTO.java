@@ -11,22 +11,20 @@ import java.util.Set;
 
 public class PedidoDTO implements Serializable {
 
-
     private Cliente cliente;
-
     private Endereco enderecoDeEntrega;
-
     private Pagamento pagamento;
-
     private Set<ItemPedido> itens = new HashSet<ItemPedido>();
+    private Integer minutosUntilUtc;
 
     public PedidoDTO() {}
 
-    public PedidoDTO(Cliente cliente, Endereco enderecoDeEntrega, Pagamento pagamento, Set<ItemPedido> itens) {
+    public PedidoDTO(Cliente cliente, Endereco enderecoDeEntrega, Pagamento pagamento, Set<ItemPedido> itens, Integer minutosUntilUtc) {
         this.cliente = cliente;
         this.enderecoDeEntrega = enderecoDeEntrega;
         this.pagamento = pagamento;
         this.itens = itens;
+        this.minutosUntilUtc = minutosUntilUtc;
     }
 
     public Cliente getCliente() {
@@ -59,5 +57,13 @@ public class PedidoDTO implements Serializable {
 
     public void setItens(Set<ItemPedido> itens) {
         this.itens = itens;
+    }
+
+    public Integer getMinutosUntilUtc() {
+        return minutosUntilUtc;
+    }
+
+    public void setMinutosUntilUtc(Integer minutosUntilUtc) {
+        this.minutosUntilUtc = minutosUntilUtc;
     }
 }
