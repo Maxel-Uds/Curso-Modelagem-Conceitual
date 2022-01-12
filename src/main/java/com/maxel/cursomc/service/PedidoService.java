@@ -2,6 +2,7 @@ package com.maxel.cursomc.service;
 
 import com.maxel.cursomc.domain.*;
 import com.maxel.cursomc.domain.enums.EstadoPagamento;
+import com.maxel.cursomc.domain.enums.Perfil;
 import com.maxel.cursomc.dto.PedidoDTO;
 import com.maxel.cursomc.repositories.ItemPedidoRepository;
 import com.maxel.cursomc.repositories.PagamentoRepository;
@@ -92,6 +93,11 @@ public class PedidoService {
     }
 
     private Pedido formatPedido(Pedido pedido) {
+        UserSpringSecurity loggedUser = UserService.authenticated();
+        if(loggedUser == null || !loggedUser.hasRole(Perfil.ADMIN) && !pedido.getCliente().getId().equals(loggedUser.getId())) {
+            throw new AuthorizationException("Acesso negado");
+        }
+
         pedido.setDadosDoCliente(new ClienteView(pedido.getCliente()));
         return pedido;
     }
