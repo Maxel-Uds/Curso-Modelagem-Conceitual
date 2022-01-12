@@ -19,8 +19,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.Optional;
 
@@ -89,7 +87,9 @@ public class PedidoService {
 
         PageRequest pageRequest = PageRequest.of(page, linesPerPage, Sort.Direction.valueOf(direction), orderBy);
         Cliente cliente = clienteService.findById(loggedUser.getId());
-        return pedidoRepository.findByCliente(cliente, pageRequest);
+        Page<Pedido> pedidos =  pedidoRepository.findByCliente(cliente, pageRequest);
+        pedidos.forEach(pedido -> formatPedido(pedido));
+        return pedidos;
     }
 
     private Date currentTime(PedidoDTO pedidoDTO) {
