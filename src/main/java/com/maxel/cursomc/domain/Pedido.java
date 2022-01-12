@@ -1,6 +1,7 @@
 package com.maxel.cursomc.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -16,9 +17,12 @@ public class Pedido implements Serializable {
     private Integer id;
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm") //Formata a data através de uma mascara
     private Date instante;
+    @Transient
+    private ClienteView dadosDoCliente;
 
     @ManyToOne
     @JoinColumn(name = "cliente_id")
+    @JsonIgnore
     private Cliente cliente;
     @OneToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "endereco_de_entrega_id")
@@ -60,6 +64,14 @@ public class Pedido implements Serializable {
 
     public void setInstante(Date instante) {
         this.instante = instante;
+    }
+
+    public ClienteView getDadosDoCliente() {
+        return dadosDoCliente;
+    }
+
+    public void setDadosDoCliente(ClienteView dadosDoCliente) {
+        this.dadosDoCliente = dadosDoCliente;
     }
 
     public Cliente getCliente() {

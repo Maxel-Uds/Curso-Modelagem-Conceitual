@@ -1,5 +1,7 @@
 package com.maxel.cursomc.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Objects;
@@ -91,6 +93,7 @@ public class EnderecoDeEntrega implements Serializable {
         this.cidade = cidade;
     }
 
+    @JsonIgnore
     public Pedido getPedido() {
         return pedido;
     }

@@ -41,7 +41,7 @@ public class PedidoService {
 
     public Pedido findById(Integer id) {
         Optional<Pedido> pedido = pedidoRepository.findById(id);
-        return pedido.orElseThrow(() -> { throw new ObjectNotFoundException("Nenhum objeto foi encontrado com o ID: " + id); });
+        return formatPedido(pedido.orElseThrow(() -> { throw new ObjectNotFoundException("Nenhum objeto foi encontrado com o ID: " + id); }));
     }
 
     @Transactional
@@ -89,5 +89,10 @@ public class PedidoService {
     private EnderecoDeEntrega addAddress(PedidoDTO ped) {
         var enderecoDb = enderecoService.findById(ped.getEnderecoDeEntrega().getId());
         return entregaService.generateAddress(enderecoDb);
+    }
+
+    private Pedido formatPedido(Pedido pedido) {
+        pedido.setDadosDoCliente(new ClienteView(pedido.getCliente()));
+        return pedido;
     }
 }
