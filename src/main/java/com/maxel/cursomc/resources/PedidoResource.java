@@ -32,6 +32,12 @@ public class PedidoResource {
         return  ResponseEntity.created(uri).build();
     }
 
+    @RequestMapping(value = "/cancel-order/{id}", method = RequestMethod.PUT)
+    public ResponseEntity<Void> cancel(@PathVariable Integer id) {
+        pedidoService.cancel(id);
+        return  ResponseEntity.noContent().build();
+    }
+
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<Page<Pedido>> findPage(@RequestParam(value = "page", defaultValue = "0") Integer page, @RequestParam(value = "lines", defaultValue = "24") Integer linesPerPage, @RequestParam(value = "order", defaultValue = "instante") String orderBy, @RequestParam(value = "direction", defaultValue = "DESC") String direction) {
         Page<Pedido> list = pedidoService.findPage(page, linesPerPage, orderBy, direction);

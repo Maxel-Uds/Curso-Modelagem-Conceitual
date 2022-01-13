@@ -47,6 +47,8 @@ public abstract class Pagamento implements Serializable {
         this.estado = estado.getCod();
     }
 
+    public void cancelPaid() { this.estado = 3; }
+
     public Pedido getPedido() {
         return pedido;
     }

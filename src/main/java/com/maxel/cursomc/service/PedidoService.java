@@ -9,6 +9,7 @@ import com.maxel.cursomc.repositories.PagamentoRepository;
 import com.maxel.cursomc.repositories.PedidoRepository;
 import com.maxel.cursomc.security.UserSpringSecurity;
 import com.maxel.cursomc.service.exceptions.AuthorizationException;
+import com.maxel.cursomc.service.exceptions.DataIntegrityException;
 import com.maxel.cursomc.service.exceptions.ObjectNotFoundException;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -90,6 +91,17 @@ public class PedidoService {
         Page<Pedido> pedidos =  pedidoRepository.findByCliente(cliente, pageRequest);
         pedidos.forEach(pedido -> formatPedido(pedido));
         return pedidos;
+    }
+
+    public void cancel(Integer id) {
+        Pedido pedido = findById(id);
+
+        if(pedido.getPagamento().getEstado().equals(EstadoPagamento.QUITADO) || pedido.getPagamento().getEstado().equals(EstadoPagamento.CANCELADO)) {
+            throw new DataIntegrityException("Não é possível cancelar este pedido porque ele já está quitado ou cancelado!");
+        }
+
+        pedido.getPagamento().cancelPaid();
+        pagamentoRepository.save(pedido.getPagamento());
     }
 
     private Date currentTime(PedidoDTO pedidoDTO) {
