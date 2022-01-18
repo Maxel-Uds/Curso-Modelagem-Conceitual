@@ -4,6 +4,8 @@ import com.maxel.cursomc.domain.Categoria;
 import com.maxel.cursomc.dto.CategoriaDTO;
 import com.maxel.cursomc.service.CategoriaService;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -53,6 +55,7 @@ public class CategoriaResource {
 
     @ApiOperation(value="Excluí uma categoria pelo id")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @ApiResponses(value = { @ApiResponse(code = 400, message = "Não é possível excluir uma categoria que possui produtos"), @ApiResponse(code = 404, message = "Código inexistente") })
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<Void> delete(@PathVariable Integer id) {
         service.delete(id);
