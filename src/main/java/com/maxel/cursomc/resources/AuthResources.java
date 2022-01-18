@@ -8,6 +8,7 @@ import com.maxel.cursomc.security.JWTUtil;
 import com.maxel.cursomc.security.UserSpringSecurity;
 import com.maxel.cursomc.service.AuthService;
 import com.maxel.cursomc.service.UserService;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,6 +30,7 @@ public class AuthResources {
     @Autowired
     private JWTUtil jwtUtil;
 
+    @ApiOperation(value="Renova o token do usuário")
     @RequestMapping(value="/refresh-token", method= RequestMethod.POST)
     public ResponseEntity<Void> refreshToken(HttpServletResponse response) {
         UserSpringSecurity loggedUser = UserService.authenticated();
@@ -38,12 +40,14 @@ public class AuthResources {
         return ResponseEntity.noContent().build();
     }
 
+    @ApiOperation(value="Manda uma nova senha para o email")
     @RequestMapping(value = "/forgot-pass", method = RequestMethod.POST)
     public ResponseEntity<Void> forgotPass(@Valid @RequestBody EmailDTO emailDTO) {
         authService.sendNewPassword(emailDTO.getEmail());
         return ResponseEntity.noContent().build();
     }
 
+    @ApiOperation(value="Troca a senha do usuário")
     @RequestMapping(value = "/change-pass", method = RequestMethod.POST)
     public ResponseEntity<Void> changePass(@Valid @RequestBody NewPasswordDTO newPassDTO) {
         authService.changePassword(newPassDTO);

@@ -3,6 +3,7 @@ package com.maxel.cursomc.resources;
 import com.maxel.cursomc.domain.Categoria;
 import com.maxel.cursomc.dto.CategoriaDTO;
 import com.maxel.cursomc.service.CategoriaService;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -22,12 +23,14 @@ public class CategoriaResource {
     @Autowired
     private CategoriaService service;
 
+    @ApiOperation(value="Busca por id")
     @RequestMapping(value="/{id}", method = RequestMethod.GET)
     public ResponseEntity<Categoria> find(@PathVariable Integer id) { //@PathVariable: indica que a variável vem da URL
         Categoria obj = service.findById(id);
         return ResponseEntity.ok().body(obj);
     }
 
+    @ApiOperation(value="Cria uma nova categoria")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<Void> insert(@Valid @RequestBody CategoriaDTO objDto) { //Indica que o objeto vai ser construído a partir de um JSON enviado pelo body
@@ -38,6 +41,7 @@ public class CategoriaResource {
         return  ResponseEntity.created(uri).build();
     }
 
+    @ApiOperation(value="Atualiza categoria")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
     public ResponseEntity<Void> update(@PathVariable Integer id, @Valid @RequestBody CategoriaDTO objDto) {
@@ -47,6 +51,7 @@ public class CategoriaResource {
         return ResponseEntity.noContent().build();
     }
 
+    @ApiOperation(value="Excluí uma categoria pelo id")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<Void> delete(@PathVariable Integer id) {
@@ -54,6 +59,7 @@ public class CategoriaResource {
         return ResponseEntity.noContent().build();
     }
 
+    @ApiOperation(value="Busca todas as categorias")
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<List<CategoriaDTO>> findAll() {
         List<Categoria> list = service.findAll();
@@ -61,7 +67,7 @@ public class CategoriaResource {
         return ResponseEntity.ok().body(listDto);
     }
 
-    //Como consultar a URL: http://localhost:8080/categorias/page?page=valor&lines=valor&order=valor&direction=valor
+    @ApiOperation(value="Busca todas as categorias paginadas")
     @RequestMapping(value = "/page", method = RequestMethod.GET)
     public ResponseEntity<Page<CategoriaDTO>> findPage(@RequestParam(value = "page", defaultValue = "0") Integer page, @RequestParam(value = "lines", defaultValue = "24") Integer linesPerPage, @RequestParam(value = "order", defaultValue = "nome") String orderBy, @RequestParam(value = "direction", defaultValue = "ASC") String direction) {
         Page<Categoria> list = service.findPage(page, linesPerPage, orderBy, direction);

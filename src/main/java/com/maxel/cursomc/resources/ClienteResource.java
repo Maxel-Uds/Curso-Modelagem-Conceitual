@@ -5,6 +5,7 @@ import com.maxel.cursomc.dto.ClienteDTO;
 import com.maxel.cursomc.dto.ClienteNewDTO;
 import com.maxel.cursomc.dto.ClienteUpdateDTO;
 import com.maxel.cursomc.service.ClienteService;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -25,18 +26,21 @@ public class ClienteResource {
     @Autowired
     private ClienteService service;
 
+    @ApiOperation(value="Busca por id")
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ResponseEntity<Cliente> find(@PathVariable Integer id) {
         Cliente obj = service.findById(id);
         return ResponseEntity.ok().body(obj);
     }
 
+    @ApiOperation(value="Busca por email")
     @RequestMapping(value = "/email", method = RequestMethod.GET)
     public ResponseEntity<Cliente> findByEmail(@RequestParam(value = "value") String email) {
         Cliente cliente = service.findByEmail(email);
         return ResponseEntity.ok().body(cliente);
     }
 
+    @ApiOperation(value="Cadastra um novo cliente")
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<Void> insert(@Valid @RequestBody ClienteNewDTO objDto) {
         Cliente obj = service.fromDto(objDto);
@@ -45,6 +49,7 @@ public class ClienteResource {
         return ResponseEntity.created(uri).build();
     }
 
+    @ApiOperation(value="Atualiza um cliente pelo email")
     @RequestMapping(value = "/email", method = RequestMethod.PUT)
     public ResponseEntity<Void> update(@RequestParam(value = "value") String email, @RequestBody @Valid ClienteUpdateDTO objDto) {
         Cliente obj = service.fromDto(objDto);
@@ -52,12 +57,14 @@ public class ClienteResource {
         return ResponseEntity.noContent().build();
     }
 
+    @ApiOperation(value="Excluí um cliente por id")
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<Void> delete(@PathVariable Integer id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
     }
 
+    @ApiOperation(value="Busca todos os clientes")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<List<ClienteDTO>> findAll() {
@@ -66,6 +73,7 @@ public class ClienteResource {
         return ResponseEntity.ok().body(listDto);
     }
 
+    @ApiOperation(value="Busca todos os clientes paginados")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @RequestMapping(value = "/page" , method = RequestMethod.GET)
     public ResponseEntity<Page<ClienteDTO>> findPage(@RequestParam(value = "page", defaultValue = "0") Integer page, @RequestParam(value = "lines", defaultValue = "24") Integer linesPerPage, @RequestParam(value = "order", defaultValue = "nome") String orderBy, @RequestParam(value = "direction", defaultValue = "ASC") String direction) {
@@ -74,6 +82,7 @@ public class ClienteResource {
         return ResponseEntity.ok().body(listDto);
     }
 
+    @ApiOperation(value="Adiciona o role de ADMIN")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @RequestMapping(value = "/upgrade-role" , method = RequestMethod.PUT)
     public ResponseEntity<Void> upgradeRole(@RequestParam(value = "value") String email) {
@@ -81,6 +90,7 @@ public class ClienteResource {
         return ResponseEntity.noContent().build();
     }
 
+    @ApiOperation(value="Retira o role de ADMIN")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @RequestMapping(value = "/downgrade-role" , method = RequestMethod.PUT)
     public ResponseEntity<Void> downgradeRole(@RequestParam(value = "value") String email) {
@@ -88,6 +98,7 @@ public class ClienteResource {
         return ResponseEntity.noContent().build();
     }
 
+    @ApiOperation(value="Atualiza a foto de perfil")
     @RequestMapping(value = "/picture", method = RequestMethod.POST)
     public ResponseEntity<URI> uploadProfilePicture(@RequestParam(name = "file") MultipartFile multipartFile) {
         URI uri = service.uploadProfilePicture(multipartFile);
